@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Frontier - AI 科技前沿资讯</title>
+<script src="ai_frontier_data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+/* ===== CSS Variables & Reset ===== */
+:root {
+  --primary: #2563eb;
+  --secondary: #7c3aed;
+  --accent: #db2777;
+  --bg-main: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-card: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --border-color: #e2e8f0;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+  --gradient-primary: linear-gradient(135deg, #2563eb, #7c3aed);
+  --gradient-accent: linear-gradient(135deg, #7c3aed, #db2777);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ===== Header ===== */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-color);
+  padding: 16px 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 800;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
+}
+
+.nav-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 10px 16px;
+  color: var(--text-primary);
+  width: 260px;
+  font-size: 14px;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
+}
+
+.search-box:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+
+.theme-toggle {
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-primary);
+  transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
+}
+
+.theme-toggle:hover {
+  border-color: var(--secondary);
+  box-shadow: var(--shadow-md);
+}
+
+.notify-btn {
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-primary);
+  transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
+}
+
+.notify-btn:hover {
+  border-color: var(--secondary);
+  box-shadow: var(--shadow-md);
+}
+
+.notify-btn.active {
+  background: var(--gradient-primary);
+  color: white;
+  border-color: transparent;
+}
+
+/* ===== Main Content ===== */
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+/* ===== Hero Section ===== */
+.hero {
+  text-align: center;
+  padding: 48px 20px;
+  margin-bottom: 48px;
+  background: var(--bg-main);
+  border-radius: 24px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
+}
+
+.hero-badge {
+  display: inline-block;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, rgba(37,99,235,0.1), rgba(124,58,237,0.1));
+  border: 1px solid rgba(37,99,235,0.2);
+  border-radius: 20px;
+  font-size: 13px;
+  color: var(--primary);
+  margin-bottom: 24px;
+  font-weight: 600;
+}
+
+.hero-title {
+  font-size: 48px;
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 20px;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -1px;
+}
+
+.hero-subtitle {
+  font-size: 18px;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ===== Stats Bar ===== */
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin: 32px 0;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 24px;
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s;
+}
+
+.stat-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.stat-number {
+  font-size: 36px;
+  font-weight: 900;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-top: 8px;
+}
+
+/* ===== Chart Section ===== */
+.chart-section {
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 32px 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.chart-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+
+.chart-container {
+  position: relative;
+  height: 300px;
+}
+
+/* ===== Tabs ===== */
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin: 24px 0;
+  flex-wrap: wrap;
+  padding: 8px;
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.tab {
+  padding: 10px 20px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.tab:hover {
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+}
+
+.tab.active {
+  color: white;
+  background: var(--gradient-primary);
+  border-color: transparent;
+  box-shadow: var(--shadow-md);
+}
+
+/* ===== News List ===== */
+.news-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.news-item {
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  gap: 20px;
+  transition: all 0.2s;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+}
+
+.news-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary);
+}
+
+.news-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(37,99,235,0.1), rgba(124,58,237,0.1));
+  border: 1px solid rgba(37,99,235,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.news-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.news-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.news-tag {
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: white;
+}
+
+.tag-blue { background: linear-gradient(135deg, #2563eb, #3b82f6); }
+.tag-green { background: linear-gradient(135deg, #059669, #10b981); }
+.tag-purple { background: linear-gradient(135deg, #7c3aed, #a78bfa); }
+.tag-cyan { background: linear-gradient(135deg, #0891b2, #06b6d4); }
+.tag-orange { background: linear-gradient(135deg, #ea580c, #f97316); }
+
+.news-category {
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding: 4px 10px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+}
+
+.news-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.news-item:hover .news-title {
+  color: var(--primary);
+}
+
+.news-summary {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.news-meta {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.news-date {
+  margin-left: auto;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 12px;
+}
+
+/* ===== Favorite Button ===== */
+.favorite-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 4px;
+  border-radius: 8px;
+}
+
+.favorite-btn:hover {
+  transform: scale(1.2);
+  background: rgba(219,39,119,0.1);
+}
+
+.favorite-btn.active {
+  color: #db2777;
+}
+
+/* ===== Pagination ===== */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 32px 0;
+  flex-wrap: wrap;
+}
+
+.page-btn {
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-main);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
+}
+
+.page-btn:hover {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-md);
+}
+
+.page-btn.active {
+  background: var(--gradient-primary);
+  color: white;
+  border-color: transparent;
+}
+
+.page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ===== Comments Section ===== */
+.comments-section {
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 32px 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.comments-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+
+/* ===== Footer ===== */
+.footer {
+  text-align: center;
+  padding: 48px 24px;
+  border-top: 1px solid var(--border-color);
+  margin-top: 64px;
+  background: var(--bg-main);
+}
+
+.footer-text {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .hero-title { font-size: 36px; }
+  .hero-subtitle { font-size: 16px; }
+  .header-inner { flex-direction: column; }
+  .search-box { width: 100%; }
+  .news-item { flex-direction: column; }
+  .news-icon { width: 48px; height: 48px; font-size: 24px; }
+  .stats-bar { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">🤖 AI Frontier</div>
+    <div class="nav-actions">
+      <input type="text" class="search-box" placeholder="搜索 AI 资讯..." id="searchInput">
+      <button class="theme-toggle" onclick="toggleTheme()">🌙 深色模式</button>
+      <button class="notify-btn" onclick="toggleNotifications()" id="notifyBtn">🔔 开启通知</button>
+    </div>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main class="main">
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-badge">🚀 实时更新 · 2026-06-17</div>
+    <h1 class="hero-title">AI 科技前沿</h1>
+    <p class="hero-subtitle">追踪大模型、Agent、Skill 最新动态，汇聚学术论文与技术突破</p>
+  </section>
+
+  <!-- Stats -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-number" id="statNews">0</div>
+      <div class="stat-label">资讯总数</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" id="statToday">0</div>
+      <div class="stat-label">今日更新</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" id="statCategories">5</div>
+      <div class="stat-label">内容分类</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" id="statSources">0</div>
+      <div class="stat-label">资讯来源</div>
+    </div>
+  </div>
+
+  <!-- Chart Section -->
+  <div class="chart-section">
+    <div class="chart-title">📊 AI 资讯趋势（近7天）</div>
+    <div class="chart-container">
+      <canvas id="trendChart"></canvas>
+    </div>
+  </div>
+
+  <!-- News Section -->
+  <h2 style="font-size: 24px; font-weight: 800; margin: 32px 0 16px; color: var(--text-primary);">📰 最新资讯</h2>
+  
+  <!-- Tabs -->
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-category="全部">全部</button>
+    <button class="tab" data-category="大模型">🤖 大模型</button>
+    <button class="tab" data-category="Agent">🧩 Agent</button>
+    <button class="tab" data-category="Skill">⚡ Skill</button>
+    <button class="tab" data-category="学术论文">📄 学术论文</button>
+    <button class="tab" data-category="技术突破">🚀 技术突破</button>
+  </div>
+  
+  <!-- News List -->
+  <div class="news-list" id="newsList"></div>
+  
+  <!-- Pagination -->
+  <div class="pagination" id="pagination"></div>
+  
+  <!-- Comments Section -->
+  <div class="comments-section">
+    <div class="comments-title">💬 评论区</div>
+    <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 14px;">
+      要启用评论功能，请创建 GitHub 仓库并配置 Giscus。<br>
+      参考文档：<a href="https://giscus.app/zh-CN" target="_blank" style="color: var(--primary);">https://giscus.app/zh-CN</a>
+    </p>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+  <p class="footer-text">AI Frontier · 实时追踪 AI 科技前沿 · 数据每2小时自动更新</p>
+</footer>
+
+<script>
+// ===== Configuration =====
+const ITEMS_PER_PAGE = 20;
+let currentPage = 1;
+let currentCategory = '全部';
+let currentKeyword = '';
+
+// ===== Theme Toggle =====
+function toggleTheme() {
+  document.body.classList.toggle('dark');
+  const isDark = document.body.classList.contains('dark');
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  document.querySelector('.theme-toggle').textContent = isDark ? '☀️ 浅色模式' : '🌙 深色模式';
+  
+  // 更新CSS变量
+  if (isDark) {
+    document.documentElement.style.setProperty('--bg-main', '#0f172a');
+    document.documentElement.style.setProperty('--bg-secondary', '#1e293b');
+    document.documentElement.style.setProperty('--bg-card', '#1e293b');
+    document.documentElement.style.setProperty('--text-primary', '#e2e8f0');
+    document.documentElement.style.setProperty('--text-secondary', '#94a3b8');
+    document.documentElement.style.setProperty('--border-color', '#334155');
+  } else {
+    document.documentElement.style.setProperty('--bg-main', '#ffffff');
+    document.documentElement.style.setProperty('--bg-secondary', '#f8fafc');
+    document.documentElement.style.setProperty('--bg-card', '#ffffff');
+    document.documentElement.style.setProperty('--text-primary', '#0f172a');
+    document.documentElement.style.setProperty('--text-secondary', '#475569');
+    document.documentElement.style.setProperty('--border-color', '#e2e8f0');
+  }
+  
+  // 重新渲染图表
+  renderChart();
+}
+
+if (localStorage.getItem('theme') === 'dark') {
+  document.body.classList.add('dark');
+  document.querySelector('.theme-toggle').textContent = '☀️ 浅色模式';
+  // 设置深色变量
+  document.documentElement.style.setProperty('--bg-main', '#0f172a');
+  document.documentElement.style.setProperty('--bg-secondary', '#1e293b');
+  document.documentElement.style.setProperty('--bg-card', '#1e293b');
+  document.documentElement.style.setProperty('--text-primary', '#e2e8f0');
+  document.documentElement.style.setProperty('--text-secondary', '#94a3b8');
+  document.documentElement.style.setProperty('--border-color', '#334155');
+}
+
+// ===== Notifications =====
+let notificationsEnabled = false;
+
+function toggleNotifications() {
+  if (!("Notification" in window)) {
+    alert('您的浏览器不支持通知功能');
+    return;
+  }
+  
+  if (Notification.permission === 'granted') {
+    // 已授权，关闭通知
+    notificationsEnabled = false;
+    document.getElementById('notifyBtn').classList.remove('active');
+    document.getElementById('notifyBtn').textContent = '🔔 开启通知';
+    localStorage.setItem('notifications', 'disabled');
+    showNotification('通知已关闭', '您将不再收到新资讯通知');
+  } else if (Notification.permission === 'denied') {
+    alert('您已拒绝通知权限，请在浏览器设置中重新启用');
+  } else {
+    // 请求授权
+    Notification.requestPermission().then(permission => {
+      if (permission === 'granted') {
+        notificationsEnabled = true;
+        document.getElementById('notifyBtn').classList.add('active');
+        document.getElementById('notifyBtn').textContent = '🔔 通知已开启';
+        localStorage.setItem('notifications', 'enabled');
+        showNotification('通知已开启', '您将收到最新 AI 资讯通知');
+        
+        // 设置定时检查（每30分钟）
+        setInterval(checkNewNews, 30 * 60 * 1000);
+      }
+    });
+  }
+}
+
+function showNotification(title, body) {
+  if (Notification.permission === 'granted') {
+    const notification = new Notification(title, {
+      body: body,
+      icon: 'https://b3c830cec4ec4fd1b84a6872c363baf2.app.codebuddy.work/favicon.ico',
+      badge: 'https://b3c830cec4ec4fd1b84a6872c363baf2.app.codebuddy.work/badge.png',
+      tag: 'ai-frontier-notification'
+    });
+    
+    notification.onclick = () => {
+      window.open('https://b3c830cec4ec4fd1b84a6872c363baf2.app.codebuddy.work');
+    };
+  }
+}
+
+function checkNewNews() {
+  // 检查是否有新资讯（对比 localStorage 中的最后更新时间）
+  const lastUpdate = localStorage.getItem('lastUpdate');
+  const today = new Date().toISOString().split('T')[0];
+  
+  if (lastUpdate !== today) {
+    const newCount = AI_NEWS_DATA.filter(item => item.date === today).length;
+    if (newCount > 0) {
+      showNotification('📰 今日新资讯', `今日已更新 ${newCount} 条 AI 资讯`);
+      localStorage.setItem('lastUpdate', today);
+    }
+  }
+}
+
+// 初始化通知状态
+if (localStorage.getItem('notifications') === 'enabled' && Notification.permission === 'granted') {
+  notificationsEnabled = true;
+  document.getElementById('notifyBtn').classList.add('active');
+  document.getElementById('notifyBtn').textContent = '🔔 通知已开启';
+  // 设置定时检查
+  setInterval(checkNewNews, 30 * 60 * 1000);
+}
+
+// ===== Stats Animation =====
+function animateStats() {
+  const total = AI_NEWS_DATA.length;
+  const today = AI_NEWS_DATA.filter(item => item.date === '2026-06-17').length;
+  const sources = [...new Set(AI_NEWS_DATA.map(item => item.source))].length;
+  
+  animateNumber('statNews', total);
+  animateNumber('statToday', today);
+  animateNumber('statSources', sources);
+}
+
+function animateNumber(elementId, target) {
+  const el = document.getElementById(elementId);
+  let current = 0;
+  const increment = target / 20;
+  const timer = setInterval(() => {
+    current += increment;
+    if (current >= target) {
+      current = target;
+      clearInterval(timer);
+    }
+    el.textContent = Math.floor(current);
+  }, 30);
+}
+
+// ===== Render Chart =====
+let trendChart = null;
+
+function renderChart() {
+  const ctx = document.getElementById('trendChart').getContext('2d');
+  
+  // 计算近7天的数据
+  const dates = [];
+  const counts = [];
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    const dateStr = date.toISOString().split('T')[0];
+    const count = AI_NEWS_DATA.filter(item => item.date === dateStr).length;
+    dates.push(dateStr.slice(5)); // MM-DD
+    counts.push(count);
+  }
+  
+  if (trendChart) trendChart.destroy();
+  
+  const isDark = document.body.classList.contains('dark');
+  const textColor = isDark ? '#e2e8f0' : '#0f172a';
+  const gridColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+  
+  trendChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: dates,
+      datasets: [{
+        label: '资讯数量',
+        data: counts,
+        borderColor: '#2563eb',
+        backgroundColor: 'rgba(37,99,235,0.1)',
+        borderWidth: 2,
+        fill: true,
+        tension: 0.4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          labels: {
+            color: textColor
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: textColor },
+          grid: { color: gridColor }
+        },
+        y: {
+          ticks: { color: textColor },
+          grid: { color: gridColor }
+        }
+      }
+    }
+  });
+}
+
+// ===== Favorite Functions =====
+function getFavorites() {
+  const favorites = localStorage.getItem('favorites');
+  return favorites ? JSON.parse(favorites) : [];
+}
+
+function toggleFavorite(index) {
+  const favorites = getFavorites();
+  const pos = favorites.indexOf(index);
+  if (pos === -1) {
+    favorites.push(index);
+  } else {
+    favorites.splice(pos, 1);
+  }
+  localStorage.setItem('favorites', JSON.stringify(favorites));
+  renderNews();
+}
+
+function isFavorite(index) {
+  return getFavorites().indexOf(index) !== -1;
+}
+
+// ===== Render News =====
+function renderNews() {
+  const list = document.getElementById('newsList');
+  const pagination = document.getElementById('pagination');
+  
+  // 过滤数据
+  let filtered = AI_NEWS_DATA;
+  if (currentCategory !== '全部') filtered = filtered.filter(item => item.category === currentCategory);
+  if (currentKeyword) {
+    const kw = currentKeyword.toLowerCase();
+    filtered = filtered.filter(item => 
+      item.title.toLowerCase().includes(kw) || 
+      item.summary.toLowerCase().includes(kw)
+    );
+  }
+  
+  // 按日期排序
+  filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+  
+  // 计算分页
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  if (currentPage > totalPages) currentPage = totalPages || 1;
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const pageData = filtered.slice(startIndex, endIndex);
+  
+  // 渲染资讯列表
+  list.innerHTML = '';
+  if (pageData.length === 0) {
+    list.innerHTML = '<div style="text-align:center;padding:60px;color:var(--text-secondary);font-size:18px;">暂无相关资讯</div>';
+  } else {
+    pageData.forEach((item, pageIndex) => {
+      const globalIndex = AI_NEWS_DATA.indexOf(item);
+      const div = document.createElement('div');
+      div.className = 'news-item';
+      
+      const favorited = isFavorite(globalIndex);
+      
+      div.innerHTML = `
+        <button class="favorite-btn ${favorited ? 'active' : ''}" onclick="event.stopPropagation(); toggleFavorite(${globalIndex});">${favorited ? '❤️' : '🤍'}</button>
+        <div class="news-icon">${item.icon || '📄'}</div>
+        <div class="news-content">
+          <div class="news-header">
+            <span class="news-tag tag-${item.tagColor || 'blue'}">${item.tag || item.category}</span>
+            <span class="news-category">${item.category}</span>
+            <span class="news-date">${item.date}</span>
+          </div>
+          <div class="news-title">${item.title}</div>
+          <div class="news-summary">${item.summary}</div>
+          ${item.journal ? `<div style="margin-top:8px;font-size:13px;color:var(--text-secondary);">📚 ${item.journal}</div>` : ''}
+          <div class="news-meta">
+            <span>👁️ ${formatNumber(item.views || 0)}</span>
+            <span>💬 ${item.comments || 0}</span>
+            <span>🔗 ${item.source}</span>
+          </div>
+        </div>
+      `;
+      
+      div.onclick = () => window.open(item.url, '_blank');
+      list.appendChild(div);
+    });
+  }
+  
+  // 渲染分页控件
+  renderPagination(totalPages);
+}
+
+function renderPagination(totalPages) {
+  const pagination = document.getElementById('pagination');
+  if (totalPages <= 1) {
+    pagination.innerHTML = '';
+    return;
+  }
+  
+  let html = '';
+  
+  // 上一页按钮
+  html += `<button class="page-btn" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>← 上一页</button>`;
+  
+  // 页码按钮
+  const startPage = Math.max(1, currentPage - 2);
+  const endPage = Math.min(totalPages, currentPage + 2);
+  
+  if (startPage > 1) {
+    html += `<button class="page-btn" onclick="goToPage(1)">1</button>`;
+    if (startPage > 2) html += `<span style="padding:0 8px;color:var(--text-secondary);">...</span>`;
+  }
+  
+  for (let i = startPage; i <= endPage; i++) {
+    html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+  }
+  
+  if (endPage < totalPages) {
+    if (endPage < totalPages - 1) html += `<span style="padding:0 8px;color:var(--text-secondary);">...</span>`;
+    html += `<button class="page-btn" onclick="goToPage(${totalPages})">${totalPages}</button>`;
+  }
+  
+  // 下一页按钮
+  html += `<button class="page-btn" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>下一页 →</button>`;
+  
+  pagination.innerHTML = html;
+}
+
+function goToPage(page) {
+  const filtered = AI_NEWS_DATA.filter(item => {
+    if (currentCategory !== '全部' && item.category !== currentCategory) return false;
+    if (currentKeyword) {
+      const kw = currentKeyword.toLowerCase();
+      if (!item.title.toLowerCase().includes(kw) && !item.summary.toLowerCase().includes(kw)) return false;
+    }
+    return true;
+  });
+  
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  if (page < 1 || page > totalPages) return;
+  
+  currentPage = page;
+  renderNews();
+  window.scrollTo({ top: document.getElementById('newsList').offsetTop - 100, behavior: 'smooth' });
+}
+
+// ===== Tabs =====
+document.getElementById('tabs').addEventListener('click', e => {
+  if (!e.target.classList.contains('tab')) return;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  e.target.classList.add('active');
+  currentCategory = e.target.dataset.category;
+  currentPage = 1;
+  const keyword = document.getElementById('searchInput').value;
+  renderNews();
+});
+
+// ===== Search =====
+document.getElementById('searchInput').addEventListener('input', e => {
+  currentKeyword = e.target.value;
+  currentPage = 1;
+  renderNews();
+});
+
+// ===== Format Number =====
+function formatNumber(num) {
+  if (num >= 10000) return (num / 10000).toFixed(1) + 'w';
+  if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
+  return num;
+}
+
+// ===== Initialize =====
+animateStats();
+renderChart();
+renderNews();
+</script>
+</body>
+</html>
